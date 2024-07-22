@@ -1,0 +1,70 @@
+version: '3.9'
+services:
+
+   api:
+      build:
+        context: ./
+        dockerfile: Dockerfile
+        target: development
+      container_name: api
+      restart: always
+      env_file:
+        - .env
+      volumes:
+       - .:/usr/src/app
+      ports:
+        - '3000:3000'
+      depends_on:
+        migratedb:
+            condition: service_completed_successfully
+        db:
+            condition: service_started
+   db:
+      image: postgres
+      restart: always
+      container_name: db
+      environment:
+        POSTGRES_PASSWORD: ${DB_PASS}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_DB: ${DB_NAME}
+      volumes:
+         - ./assignment:/var/lib/postgresql
+      ports:
+       - "${DB_PORT}:5432"
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -d ${DB_NAME} -U ${DB_USER}"]
+        # intervalDB_PASS: 10s
+        timeout: 5s
+        retries: 5
+      expose:
+      - 5434
+     
+   migratedb:
+        image: api:latest
+        restart: no
+        environment:
+            - DATABASE_URL=${DATABASE_URL}
+        command:
+            [
+                "./wait-for-it/wait-for-it.sh",
+                "db:5432",
+                "--",
+                "npx",
+                "prisma",
+                "migrate",
+                "deploy",
+            ]
+  
+        depends_on:
+            db:
+                condition: service_started
+  
+
+       
+
+volumes:
+      assignment:
+     
+      
+
+  
