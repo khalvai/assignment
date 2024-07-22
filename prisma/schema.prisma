@@ -1,0 +1,33 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserStatus {
+     PENDING_EMAIL_VERIFICATION 
+     EMAIL_VERIFIED 
+     DELETED
+     BLOCKED
+}
+model User {
+  id                   String                @id @unique
+  email                String                @unique
+  name                 String
+  password             String
+  status               UserStatus
+  createdAt            DateTime              @default(now())
+  updatedAt             DateTime              @default(now())
+  concurrencySafeVersion Int
+
+}
+model Outbox {
+  id         String @unique
+  name  String
+  payload    String
+  dispatched Boolean  @default(false)
+  occurredOn  DateTime @default(now())
+}
