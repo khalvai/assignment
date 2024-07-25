@@ -1,12 +1,12 @@
 version: '3.9'
 services:
 
-   api:
+   backend:
       build:
         context: ./
         dockerfile: Dockerfile
         target: development
-      container_name: api
+      container_name: backend
       restart: always
       env_file:
         - .env
@@ -17,9 +17,9 @@ services:
       depends_on:
         migratedb:
             condition: service_completed_successfully
-        db:
+        database:
             condition: service_started
-   db:
+   database:
       image: postgres
       restart: always
       container_name: db
@@ -40,14 +40,17 @@ services:
       - 5434
      
    migratedb:
-        image: api:latest
+        build:
+          context: ./
+          dockerfile: Dockerfile
+          target: development
         restart: no
         environment:
             - DATABASE_URL=${DATABASE_URL}
         command:
             [
                 "./wait-for-it/wait-for-it.sh",
-                "db:5432",
+                "database:5432",
                 "--",
                 "npx",
                 "prisma",
@@ -56,14 +59,15 @@ services:
             ]
   
         depends_on:
-            db:
+            database:
                 condition: service_started
-  
+          
 
        
 
 volumes:
       assignment:
+       name: "assignment"
      
       
 
