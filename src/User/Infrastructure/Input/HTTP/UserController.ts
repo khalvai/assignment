@@ -20,8 +20,8 @@ import { HttpExceptionFilter } from "src/Common/Infrastructure/Output/HttpExcept
 import { ConfirmVerificationEmailCommand } from "src/User/Application/Commands/ConfirmVerificationEmailCommand";
 import { RegisterCommand } from "src/User/Application/Commands/RegisterCommand";
 import { LoginQuery } from "src/User/Application/Queries/LoginQuery";
-import { LoginDTO } from "src/User/Infrastructure/Input/HTTP/Dto/LoginQuery";
-import { RegisterDTO } from "src/User/Infrastructure/Input/HTTP/Dto/ReginsterCommand";
+import { LoginDTO } from "src/User/Infrastructure/Input/HTTP/Dto/LoginDTO";
+import { RegisterDTO } from "src/User/Infrastructure/Input/HTTP/Dto/ReginsterDTO";
 
 
 @UseFilters(HttpExceptionFilter)
