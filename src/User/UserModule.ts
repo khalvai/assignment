@@ -5,14 +5,13 @@ import { Argon2HashService } from "src/Common/Infrastructure/Output/Argon2HashSe
 import JWTokenService from "src/Common/Infrastructure/Output/JWTokenService";
 import { NestjsEventEmitterModule } from "src/Common/Infrastructure/Output/NestjsEventEmitterModule";
 import { ConfirmVerificationEmailImpl } from "src/User/Application/Ports/Input/ConfirmVerificanEmailImpl";
-import { RegisterUseCaseImpl } from "src/User/Application/Ports/Input/RegisterUseCaseImpl";
+import { RegisterUseCaseImpl } from "src/User/Application/Ports/Input/RegisterImpl";
 import { SendVerificationEmailImp } from "src/User/Application/Ports/Input/SendVerificationEmailImpl";
 import { EmailServiceProvider } from "src/User/Application/Ports/Output/EmailServiceProvider";
 import { OutboxRepository } from "src/User/Application/Ports/Output/OutboxRepository";
 import { Template } from "src/User/Application/Ports/Output/Template";
 import { UserRepository } from "src/User/Application/Ports/Output/UserRepository";
 import { Consumer } from "src/User/Infrastructure/Input/Consumer";
-import UserHTTPPInputAdapter from "src/User/Infrastructure/Input/UserHTTPInputAdapter";
 import { LiaraEmailServiceProvider } from "src/User/Infrastructure/Output/LiaraEmailServiceProvider";
 import { OutboxMapper } from "src/User/Infrastructure/Output/Mapper/OutboxMapper";
 import UserMapper from "src/User/Infrastructure/Output/Mapper/UserMapper";
@@ -25,11 +24,13 @@ import { ConfigModule } from "@nestjs/config";
 import PrismaModule from "src/User/Infrastructure/Output/Persistence/PrismaModule";
 import { Publisher } from "src/Common/Application/Output/Publisher";
 import { NestjsEventPublisher } from "src/Common/Infrastructure/Output/NestjsEventEmitter";
+import LoginImpl from "src/User/Application/Ports/Input/LoginImpl";
+import UserController from "src/User/Infrastructure/Input/HTTP/UserController";
 
 
 @Module({
   imports: [PrismaModule, NestjsEventEmitterModule, CqrsModule, ConfigModule],
-  controllers: [UserHTTPPInputAdapter, Consumer],
+  controllers: [UserController, Consumer],
   providers: [
     {
       provide: UserRepository,
@@ -60,6 +61,7 @@ import { NestjsEventPublisher } from "src/Common/Infrastructure/Output/NestjsEve
     RegisterUseCaseImpl,
     SendVerificationEmailImp,
     ConfirmVerificationEmailImpl,
+    LoginImpl,
     OutboxMapper,
     UserMapper,
     OutboxDispatcher,
