@@ -6,5 +6,5 @@ type CreateCommand = {
 }
 export default class CreateManyCommand {
 
-    public constructor(public data: CreateCommand[]) { }
+    public constructor(public createCommands: CreateCommand[]) { }
 }
