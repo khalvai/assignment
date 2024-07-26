@@ -3,7 +3,7 @@ import UUID4 from "src/Common/Domain/UUID4";
 
 
 
-export default abstract class Entity<Id extends UUID4> {
+export default abstract class Entity<Id> {
 
     public id: Id
     private events: Set<DomainEvent<any>> = new Set();
