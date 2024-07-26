@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { PrismaModule as _PrismaModule, QueryInfo, loggingMiddleware } from 'nestjs-prisma';
-import PrismaService from 'src/User/Infrastructure/Output/Persistence/PrismaService';
+import PrismaService from 'src/Common/Infrastructure/Output/PrismaService';
 
 @Module({
     imports: [

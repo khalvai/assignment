@@ -22,7 +22,7 @@ export class OutboxDispatcher {
 
       for (const outbox of outboxes) {
         await this.publisher.publish(outbox.name, outbox);
-        // await this.outboxRepository.dispatched(outbox.id);
+        await this.outboxRepository.dispatched(outbox.id);
       }
     } catch (error) {
       console.error("Failed to dispatch event", error);

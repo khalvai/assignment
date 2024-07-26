@@ -11,7 +11,7 @@ import UserId from "src/User/Domain/UserId";
 import { OutboxMapper, OutboxModel } from "src/User/Infrastructure/Output/Mapper/OutboxMapper";
 import UserMapper from "src/User/Infrastructure/Output/Mapper/UserMapper";
 import UserPersistenceModel from "src/User/Infrastructure/Output/Model/UserPersistenceModel";
-import PrismaService from "src/User/Infrastructure/Output/Persistence/PrismaService";
+import PrismaService from "src/Common/Infrastructure/Output/PrismaService";
 
 @Injectable()
 export class PostgresqlUserRepository implements UserRepository {

@@ -21,7 +21,7 @@ import { PostgresqlUserRepository } from "src/User/Infrastructure/Output/Persist
 import { EJSTemplate } from "src/User/Infrastructure/Output/Template/EjsTemplate";
 import { CqrsModule } from "@nestjs/cqrs";
 import { ConfigModule } from "@nestjs/config";
-import PrismaModule from "src/User/Infrastructure/Output/Persistence/PrismaModule";
+import PrismaModule from "src/Common/Infrastructure/Output/PrismaModule";
 import { Publisher } from "src/Common/Application/Output/Publisher";
 import { NestjsEventPublisher } from "src/Common/Infrastructure/Output/NestjsEventEmitter";
 import LoginImpl from "src/User/Application/Ports/Input/LoginImpl";
