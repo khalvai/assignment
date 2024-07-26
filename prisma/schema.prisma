@@ -37,7 +37,7 @@ model Outbox {
 model Product {
   id    String @id @unique
   name  String
-  code  String
+  code  String @unique
   value Int
 
   User   User?   @relation(fields: [userId], references: [id])
