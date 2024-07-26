@@ -849,7 +849,7 @@
     iterare "1.2.1"
     tslib "2.6.3"
 
-"@nestjs/platform-express@^10.0.0":
+"@nestjs/platform-express@^10.3.10":
   version "10.3.10"
   resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.3.10.tgz#45fa006605913d5aaa31bf99073136ad639939b4"
   integrity sha512-wK2ow3CZI2KFqWeEpPmoR300OB6BcBLxARV1EiClJLCj4S1mZsoCmS0YWgpk3j1j6mo0SI8vNLi/cC2iZPEPQA==
@@ -1116,7 +1116,7 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
-"@types/express@^4.17.17":
+"@types/express@*", "@types/express@^4.17.17":
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.21.tgz#c26d4a151e60efe0084b23dc3369ebc631ed192d"
   integrity sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==
@@ -1191,6 +1191,13 @@
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.5.tgz#1ef302e01cf7d2b5a0fa526790c9123bf1d06690"
   integrity sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==
+
+"@types/multer@^1.4.11":
+  version "1.4.11"
+  resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.4.11.tgz#c70792670513b4af1159a2b60bf48cc932af55c5"
+  integrity sha512-svK240gr6LVWvv3YGyhLlA+6LRRWA4mnGIU7RcNmgjBYFl6665wcXrRfxGp5tEPVHUNm5FMcmq7too9bxCwX/w==
+  dependencies:
+    "@types/express" "*"
 
 "@types/node@*", "@types/node@^20.3.1":
   version "20.14.11"
@@ -2203,6 +2210,38 @@ crypto@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
   integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
+
+csv-generate@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/csv-generate/-/csv-generate-4.4.1.tgz#729781ace8d1b92f6bfb407d1ab9548728c55681"
+  integrity sha512-O/einO0v4zPmXaOV+sYqGa02VkST4GP5GLpWBNHEouIU7pF3kpGf3D0kCCvX82ydIY4EKkOK+R8b1BYsRXravg==
+
+csv-parse@^5.5.6:
+  version "5.5.6"
+  resolved "https://registry.yarnpkg.com/csv-parse/-/csv-parse-5.5.6.tgz#0d726d58a60416361358eec291a9f93abe0b6b1a"
+  integrity sha512-uNpm30m/AGSkLxxy7d9yRXpJQFrZzVWLFBkS+6ngPcZkw/5k3L/jjFuj7tVnEpRn+QgmiXr21nDlhCiUK4ij2A==
+
+csv-parser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/csv-parser/-/csv-parser-3.0.0.tgz#b88a6256d79e090a97a1b56451f9327b01d710e7"
+  integrity sha512-s6OYSXAK3IdKqYO33y09jhypG/bSDHPuyCme/IdEHfWpLf/jKcpitVFyOC6UemgGk8v7Q5u2XE0vvwmanxhGlQ==
+  dependencies:
+    minimist "^1.2.0"
+
+csv-stringify@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-6.5.0.tgz#7b1491893c917e018a97de9bf9604e23b88647c2"
+  integrity sha512-edlXFVKcUx7r8Vx5zQucsuMg4wb/xT6qyz+Sr1vnLrdXqlLD1+UKyWNyZ9zn6mUW1ewmGxrpVwAcChGF0HQ/2Q==
+
+csv@^6.3.9:
+  version "6.3.9"
+  resolved "https://registry.yarnpkg.com/csv/-/csv-6.3.9.tgz#1812e4542aa4ca1e4a70cb5a5d16c1e425451f06"
+  integrity sha512-eiN+Qu8NwSLxZYia6WzB8xlX/rAQ/8EgK5A4dIF7Bz96mzcr5dW1jlcNmjG0QWySWKfPdCerH3RQ96ZqqsE8cA==
+  dependencies:
+    csv-generate "^4.4.1"
+    csv-parse "^5.5.6"
+    csv-stringify "^6.5.0"
+    stream-transform "^3.3.2"
 
 debug@2.6.9:
   version "2.6.9"
@@ -4007,7 +4046,7 @@ minimatch@^9.0.4:
   dependencies:
     brace-expansion "^2.0.1"
 
-minimist@^1.2.6:
+minimist@^1.2.0, minimist@^1.2.6:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
   integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
@@ -4801,6 +4840,11 @@ statuses@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-2.0.1.tgz#55cb000ccf1d48728bd23c685a063998cf1a1b63"
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
+
+stream-transform@^3.3.2:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/stream-transform/-/stream-transform-3.3.2.tgz#398c67b2f3b6ed5d04ceadde9e412bda8416c8ab"
+  integrity sha512-v64PUnPy9Qw94NGuaEMo+9RHQe4jTBYf+NkTtqkCgeuiNo8NlL0LtLR7fkKWNVFtp3RhIm5Dlxkgm5uz7TDimQ==
 
 streamsearch@^1.1.0:
   version "1.1.0"
