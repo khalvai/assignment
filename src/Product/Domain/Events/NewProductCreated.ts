@@ -10,7 +10,12 @@ export class NewProductCreated extends DomainEvent<Payload> {
     public isPublic: boolean = false
 
     static of(product: Product): NewProductCreated {
-        return new NewProductCreated({ code: product.code.value, id: product.id.value, name: product.name.value, value: product.value.value })
+        return new NewProductCreated({
+            code: product.code.value,
+            id: product.id.value,
+            name: product.name.value,
+            value: product.value.value
+        })
     }
 
 }

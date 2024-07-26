@@ -15,7 +15,7 @@ export class Product extends AggregateRoot<Id> {
     public value: Value
     public userId: UserId
 
-    static create(code: Code, name: Name, value: Value): Product {
+    static create(code: Code, name: Name, value: Value, userId: UserId): Product {
 
         const id: Id = Id.create()
 
@@ -24,7 +24,8 @@ export class Product extends AggregateRoot<Id> {
         product.id = id
         product.name = name
         product.value = value
-
+        product.code = code
+        product.userId = userId
 
         product.addEvent(NewProductCreated.of(product))
         return product
