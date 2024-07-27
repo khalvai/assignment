@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Product } from "src/Product/Domain/Product";
+import { ProductReadModel } from "src/Product/Infrastructure/Models/ProductReadModel";
 import { ProductPersistenceModel } from "src/Product/Infrastructure/ProductPersistenceModel";
 
 
@@ -16,5 +17,9 @@ export class ProductMapper {
             userId: product.userId.value,
             value: product.value.value
         }
+    }
+
+    toRead(persistenceModel: ProductPersistenceModel): ProductReadModel {
+        return { code: persistenceModel.name, value: persistenceModel.value, name: persistenceModel.name }
     }
 }
