@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Inject, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { UploadedFilePipe } from "src/Product/Infrastructure/HTTP/uploadFile.decorator";
@@ -16,6 +16,9 @@ import { GetAllQuery } from "src/Product/Application/Queries/GetAllQuery";
 import { ProductReadModel } from "src/Product/Infrastructure/Models/ProductReadModel";
 import { DeleteAllCommand } from "src/Product/Application/Commands/DeleteAllCommand";
 import { ProductResponseMessages } from "ResponseMessages/product.response.messages";
+import { Publisher } from "src/Common/Application/Output/Publisher";
+import { RabbitSubscribe } from "@golevelup/nestjs-rabbitmq";
+import { Payload } from '@nestjs/microservices'
 
 type row = {
     Code: string,
@@ -28,7 +31,10 @@ type row = {
 @UseFilters(HttpExceptionFilter)
 export class ProductController {
 
-    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) { }
+    constructor(private readonly commandBus: CommandBus,
+        private readonly queryBus: QueryBus,
+        @Inject(Publisher) private readonly publisher: Publisher
+    ) { }
 
 
     @UseGuards(AuthGuard)
@@ -40,7 +46,6 @@ export class ProductController {
         @UploadedFilePipe(2) file: Express.Multer.File,
         @GetUserId() userId: string
     ) {
-
 
         const createData: CreateCommand[] = []
         const rows = await this.parseCsv(file.buffer) as row[]
@@ -82,6 +87,53 @@ export class ProductController {
         }
     }
 
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('file'))
+    @UseGuards(AuthGuard)
+    @Post("publish")
+    async publishFile(
+        @Body() data: CreateManyProductDTO,
+        @UploadedFilePipe(2) file: Express.Multer.File,
+        @GetUserId() userId: string
+    ) {
+
+        await this.publisher.publish('Queue1', { userId: userId, file: file })
+        console.log("Published");
+
+    }
+
+    @RabbitSubscribe({
+        queue: "Queue1",
+        routingKey: "Queue1"
+
+    })
+    async createProductsFromRabbitmqFile(@Payload() payload: { userId: string, file: any }) {
+
+        const buffer: Buffer = Buffer.from(payload.file.buffer.data)
+        const createData: CreateCommand[] = []
+
+        const rows = await this.parseCsv(buffer) as row[]
+
+        rows.map(r => {
+            createData.push({
+                code: r.Code,
+                name: r.Name,
+                value: Number(r.Value)
+            })
+        })
+
+        try {
+
+            await this.commandBus.execute<CreateManyCommand>(new CreateManyCommand(createData, payload.userId))
+            console.log("created");
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+
+    }
     private parseCsv(buffer: Buffer): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const results: any[] = [];
