@@ -40,6 +40,6 @@ model Product {
   code  String @unique
   value Int
 
-  User   User?   @relation(fields: [userId], references: [id])
-  userId String?
+  User   User   @relation(fields: [userId], references: [id])
+  userId String
 }
