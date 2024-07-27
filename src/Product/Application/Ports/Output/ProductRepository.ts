@@ -10,6 +10,6 @@ export interface ProductRepository {
     productExistsIn(codes: Code[]): Promise<boolean>
     save(product: Product): Promise<void>
     saveAll(products: Product[]): Promise<void>
-
-    getAll(userId: UserId): Promise<ProductReadModel[]>
+    getAll(userId: UserId): Promise<Product[]>
+    getAllReadModels(userId: UserId): Promise<ProductReadModel[]>
 }
