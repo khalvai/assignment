@@ -2,7 +2,7 @@ import Result from "src/Common/Application/Result";
 import { LoginQuery } from "src/User/Application/Queries/LoginQuery";
 import { Login } from "src/User/Application/UseCases/Login";
 import { TokenService } from "src/Common/Application/Output/TokenService";
-import { Inject } from "@nestjs/common";
+import { Inject, UnauthorizedException } from "@nestjs/common";
 import { UserRepository } from "src/User/Application/Ports/Output/UserRepository"
 import Email from "src/User/Domain/Email";
 import NotValidInputException from "src/Common/Domain/Exceptions/NotValidInput";
@@ -11,6 +11,8 @@ import { UserResponseMessages } from "ResponseMessages/user.response.messages";
 import { HashService } from "src/Common/Application/Output/HashService";
 import Password from "src/User/Domain/Password";
 import Notification from "src/Common/Application/Notification";
+import { UserStatus } from "@prisma/client";
+import { InValidOperationException } from "src/Common/Domain/Exceptions/InValidOperationException";
 
 
 @QueryHandler(LoginQuery)
@@ -43,6 +45,10 @@ export default class LoginImpl implements IQueryHandler<LoginQuery, string> {
             throw new NotValidInputException([UserResponseMessages.INVALID_CREDENTIALS])
         }
 
+        if (user.status !== UserStatus.EMAIL_VERIFIED) {
+
+            throw new InValidOperationException(UserResponseMessages.EMAIL_IS_NOT_VERIFIED)
+        }
 
 
         const equals = await this.hashService.compare(user.password.value, query.password)
