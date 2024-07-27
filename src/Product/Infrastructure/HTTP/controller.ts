@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { UploadedFilePipe } from "src/Product/Infrastructure/HTTP/uploadFile.decorator";
@@ -14,6 +14,7 @@ import { AuthGuard } from "src/Common/Infrastructure/Input/AuthGuard";
 import { GetUserId } from "src/Common/Infrastructure/Input/GetUserId";
 import { GetAllQuery } from "src/Product/Application/Queries/GetAllQuery";
 import { ProductReadModel } from "src/Product/Infrastructure/Models/ProductReadModel";
+import { DeleteAllCommand } from "src/Product/Application/Commands/DeleteAllCommand";
 
 type row = {
     Code: string,
@@ -65,6 +66,18 @@ export class ProductController {
 
         return data
     }
+
+    @UseGuards(AuthGuard)
+    @Delete("/deleteAll")
+    async deleteAll(@GetUserId() userId: string) {
+
+        await this.commandBus.execute<DeleteAllCommand, Promise<void>>(new DeleteAllCommand(userId))
+
+        return {
+            message: "ALL_PRODUCTS_DELTED"
+        }
+    }
+
     private parseCsv(buffer: Buffer): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const results: any[] = [];

@@ -11,6 +11,7 @@ import { ProductController } from "src/Product/Infrastructure/HTTP/controller";
 import { TokenService } from "src/Common/Application/Output/TokenService";
 import JWTokenService from "src/Common/Infrastructure/Output/JWTokenService";
 import { GetAllImp } from "src/Product/Application/Ports/Input/GetAllImpl";
+import { DeleteAllImpl } from "src/Product/Application/Ports/Input/DeleteAllImpl";
 
 
 
@@ -33,7 +34,8 @@ import { GetAllImp } from "src/Product/Application/Ports/Input/GetAllImpl";
 
         ProductMapper,
         CreateManyImpl,
-        GetAllImp
+        GetAllImp,
+        DeleteAllImpl
     ]
 })
 export class ProductModule { }
