@@ -1,5 +1,5 @@
-import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
-import { CommandBus } from "@nestjs/cqrs";
+import { Body, Controller, Get, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
+import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { UploadedFilePipe } from "src/Product/Infrastructure/HTTP/uploadFile.decorator";
 import { Express } from "express";
@@ -12,6 +12,8 @@ import CreateManyCommand from "src/Product/Application/Commands/CreateManyComman
 import { CreateCommand } from "src/Product/Application/Commands/CreateCommand";
 import { AuthGuard } from "src/Common/Infrastructure/Input/AuthGuard";
 import { GetUserId } from "src/Common/Infrastructure/Input/GetUserId";
+import { GetAllQuery } from "src/Product/Application/Queries/GetAllQuery";
+import { ProductReadModel } from "src/Product/Infrastructure/Models/ProductReadModel";
 
 type row = {
     Code: string,
@@ -24,7 +26,7 @@ type row = {
 @UseFilters(HttpExceptionFilter)
 export class ProductController {
 
-    constructor(private readonly commandBus: CommandBus) { }
+    constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) { }
 
 
     @UseGuards(AuthGuard)
@@ -55,6 +57,14 @@ export class ProductController {
 
     }
 
+    @UseGuards(AuthGuard)
+    @Get("/getAll")
+    async getAll(@GetUserId() userId: string) {
+
+        const data = await this.queryBus.execute<GetAllQuery, ProductReadModel>(new GetAllQuery(userId))
+
+        return data
+    }
     private parseCsv(buffer: Buffer): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const results: any[] = [];
