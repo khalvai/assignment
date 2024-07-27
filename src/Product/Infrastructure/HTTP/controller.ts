@@ -15,6 +15,7 @@ import { GetUserId } from "src/Common/Infrastructure/Input/GetUserId";
 import { GetAllQuery } from "src/Product/Application/Queries/GetAllQuery";
 import { ProductReadModel } from "src/Product/Infrastructure/Models/ProductReadModel";
 import { DeleteAllCommand } from "src/Product/Application/Commands/DeleteAllCommand";
+import { ProductResponseMessages } from "ResponseMessages/product.response.messages";
 
 type row = {
     Code: string,
@@ -56,6 +57,9 @@ export class ProductController {
 
         await this.commandBus.execute<CreateManyCommand>(new CreateManyCommand(createData, userId))
 
+        return {
+            message: ProductResponseMessages.PRODUCTS_ARE_CREATED
+        }
     }
 
     @UseGuards(AuthGuard)
@@ -74,7 +78,7 @@ export class ProductController {
         await this.commandBus.execute<DeleteAllCommand, Promise<void>>(new DeleteAllCommand(userId))
 
         return {
-            message: "ALL_PRODUCTS_DELTED"
+            message: ProductResponseMessages.PRODUCTS_ARE_DELETED
         }
     }
 
