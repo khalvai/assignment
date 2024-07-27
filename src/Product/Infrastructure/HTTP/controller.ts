@@ -1,6 +1,6 @@
-import { Body, Controller, Post, UseFilters, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
-import { ApiConsumes, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { UploadedFilePipe } from "src/Product/Infrastructure/HTTP/uploadFile.decorator";
 import { Express } from "express";
 import { FileInterceptor } from '@nestjs/platform-express'
@@ -10,12 +10,15 @@ import * as csv from 'csv-parser'
 import { Stream } from "node:stream";
 import CreateManyCommand from "src/Product/Application/Commands/CreateManyCommand";
 import { CreateCommand } from "src/Product/Application/Commands/CreateCommand";
+import { AuthGuard } from "src/Common/Infrastructure/Input/AuthGuard";
+import { GetUserId } from "src/Common/Infrastructure/Input/GetUserId";
 
 type row = {
     Code: string,
     Name: string,
     Value: string
 }
+@ApiBearerAuth()
 @ApiTags("Product")
 @Controller("product")
 @UseFilters(HttpExceptionFilter)
@@ -24,13 +27,15 @@ export class ProductController {
     constructor(private readonly commandBus: CommandBus) { }
 
 
+    @UseGuards(AuthGuard)
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('file'))
     @Post('')
     async createMany(
         @Body() data: CreateManyProductDTO,
-        @UploadedFilePipe(2) file: Express.Multer.File) {
-
+        @UploadedFilePipe(2) file: Express.Multer.File,
+        @GetUserId() userId: string
+    ) {
 
 
         const createData: CreateCommand[] = []
@@ -46,7 +51,7 @@ export class ProductController {
             })
         })
 
-        await this.commandBus.execute<CreateManyCommand>(new CreateManyCommand(createData))
+        await this.commandBus.execute<CreateManyCommand>(new CreateManyCommand(createData, userId))
 
     }
 

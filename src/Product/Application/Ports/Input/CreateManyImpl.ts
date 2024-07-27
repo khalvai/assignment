@@ -28,7 +28,7 @@ export class CreateManyImpl implements CreateMany {
         }
 
         const products: Product[] = []
-        const userId = UserId.createFromValid("7fb28a6c-0e0e-4511-a1d9-94fa02e2b42f")
+        const userId = UserId.createFromValid(command.userId)
 
         for (const data of command.createCommands) {
             const nameResult = Name.createFromInput(data.name)
@@ -44,8 +44,6 @@ export class CreateManyImpl implements CreateMany {
 
             const product = Product.create(codeResult.ok, nameResult.ok, valueResult.ok, userId)
             products.push(product)
-
-
         }
 
         const productExists = await this.productRepository.productExistsIn(products.map(p => p.code))
