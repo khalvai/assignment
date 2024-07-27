@@ -58,13 +58,10 @@ export default class UserController {
 
 
 
-    const result = await this.commandBus
+    await this.commandBus
       .execute<ConfirmVerificationEmailCommand, Result<void>>(new ConfirmVerificationEmailCommand(token))
 
 
-    if ("failure" in result) {
-      throw result.failure
-    }
 
     return {
       message: UserResponseMessages.EMAIL_VERIFIED
