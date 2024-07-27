@@ -28,7 +28,7 @@ services:
         POSTGRES_USER: ${DB_USER}
         POSTGRES_DB: ${DB_NAME}
       volumes:
-         - ./assignment:/var/lib/postgresql
+         -  db-data:/var/lib/postgresql
       ports:
        - "${DB_PORT}:5432"
       healthcheck:
@@ -62,13 +62,25 @@ services:
             database:
                 condition: service_started
           
-
+   rabbitmq:
+      image: rabbitmq:3-management
+      container_name: rabbitmq
+      ports:
+        - "5672:5672"  # RabbitMQ main port
+        - "15672:15672"  # RabbitMQ management plugin port
+      environment:
+        RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+        RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      volumes:
+        - rabbitmq_data:/var/lib/rabbitmq
+        - rabbitmq_log:/var/log/rabbitmq
        
 
 volumes:
-      assignment:
-       name: "assignment"
-     
+      db-data:
+      rabbitmq_data:
+      rabbitmq_log:
+
       
 
   
