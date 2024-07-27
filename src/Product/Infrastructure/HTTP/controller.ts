@@ -90,8 +90,8 @@ export class ProductController {
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('file'))
     @UseGuards(AuthGuard)
-    @Post("publish")
-    async publishFile(
+    @Post("publishToQueue1")
+    async publishToQueue1(
         @Body() data: CreateManyProductDTO,
         @UploadedFilePipe(2) file: Express.Multer.File,
         @GetUserId() userId: string
@@ -101,6 +101,22 @@ export class ProductController {
         console.log("Published");
 
     }
+
+    @ApiConsumes('multipart/form-data')
+    @UseInterceptors(FileInterceptor('file'))
+    @UseGuards(AuthGuard)
+    @Post("publishToQueue2")
+    async publishToQueue2(
+        @Body() data: CreateManyProductDTO,
+        @UploadedFilePipe(2) file: Express.Multer.File,
+        @GetUserId() userId: string
+    ) {
+
+        await this.publisher.publish('Queue2', { userId: userId, file: file })
+        console.log("Published");
+
+    }
+
 
     @RabbitSubscribe({
         queue: "Queue1",
@@ -134,6 +150,59 @@ export class ProductController {
 
 
     }
+
+    @RabbitSubscribe({
+        queue: "Queue2",
+        routingKey: "Queue2"
+
+    })
+    async publishToQueue3(@Payload() payload: { userId: string, file: any }) {
+
+        const buffer: Buffer = Buffer.from(payload.file.buffer.data)
+        const rows = await this.parseCsv(buffer) as row[]
+
+        await this.publisher.publish("Queue3", { rows: rows, userId: payload.userId })
+
+        console.log('received in queue2 listener and published to Queue3');
+
+    }
+
+
+
+    @RabbitSubscribe({
+        queue: "Queue3",
+        routingKey: "Queue3"
+
+    })
+    async createProductFromQueue3(@Payload() payload: { userId: string, rows: row[] }) {
+
+        console.log('received in queue3listener');
+
+        const createData: CreateCommand[] = []
+
+
+        payload.rows.map(r => {
+            createData.push({
+                code: r.Code,
+                name: r.Name,
+                value: Number(r.Value)
+            })
+        })
+
+        try {
+
+            await this.commandBus.execute<CreateManyCommand>(new CreateManyCommand(createData, payload.userId))
+            console.log("created");
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+
+    }
+
+
     private parseCsv(buffer: Buffer): Promise<any[]> {
         return new Promise((resolve, reject) => {
             const results: any[] = [];
