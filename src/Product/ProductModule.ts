@@ -12,6 +12,9 @@ import { TokenService } from "src/Common/Application/Output/TokenService";
 import JWTokenService from "src/Common/Infrastructure/Output/JWTokenService";
 import { GetAllImp } from "src/Product/Application/Ports/Input/GetAllImpl";
 import { DeleteAllImpl } from "src/Product/Application/Ports/Input/DeleteAllImpl";
+import { Publisher } from "src/Common/Application/Output/Publisher";
+import { RabbitMQPublisher } from "src/Common/Infrastructure/Output/RabbitMQPublisher";
+import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 
 
 
@@ -20,7 +23,40 @@ import { DeleteAllImpl } from "src/Product/Application/Ports/Input/DeleteAllImpl
 
 
 @Module({
-    imports: [PrismaModule, NestjsEventEmitterModule, CqrsModule, ConfigModule],
+    imports: [PrismaModule, NestjsEventEmitterModule, CqrsModule, ConfigModule,
+        RabbitMQModule.forRootAsync(RabbitMQModule, {
+            useFactory: () => (
+                {
+                    exchanges: [{
+                        name: "Product",
+                        type: "topic",
+                        createExchangeIfNotExists: true
+                    }],
+                    queues: [
+                        {
+                            name: "Queue1",
+                            routingKey: "Queue1",
+                            createQueueIfNotExists: true,
+                            exchange: "Product"
+                        }, {
+                            name: "Queue2",
+                            routingKey: "Queue2",
+                            createQueueIfNotExists: true,
+                            exchange: "Product"
+                        }, {
+                            name: "Queue3",
+                            routingKey: "Queue3",
+                            createQueueIfNotExists: true,
+                            exchange: "Product"
+                        },
+                    ],
+                    uri: "amqp://user:password@rabbitmq",
+                    connectionInitOptions: { wait: false },
+                    enableControllerDiscovery: true
+                }),
+
+        }),
+    ],
     controllers: [ProductController],
     providers: [
         {
@@ -31,7 +67,10 @@ import { DeleteAllImpl } from "src/Product/Application/Ports/Input/DeleteAllImpl
             provide: TokenService,
             useClass: JWTokenService,
         },
-
+        {
+            provide: Publisher,
+            useClass: RabbitMQPublisher
+        },
         ProductMapper,
         CreateManyImpl,
         GetAllImp,
