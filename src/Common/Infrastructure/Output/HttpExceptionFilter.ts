@@ -11,6 +11,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 import Exception from '../../Domain/Exceptions/Exception';
 import NotValidInputException from '../../Domain/Exceptions/NotValidInput';
 import AlreadyExistsException from '../../Domain/Exceptions/AlreadyExistsException';
+import { InValidOperationException } from 'src/Common/Domain/Exceptions/InValidOperationException';
 
 
 @Catch()
@@ -49,6 +50,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
             httpStatus = HttpStatus.BAD_REQUEST
         }
 
+        if (exception instanceof InValidOperationException) {
+            message = exception.message
+            httpStatus = HttpStatus.BAD_REQUEST
+        }
         const responseBody = {
             statusCode: httpStatus,
             timestamp: new Date().toISOString(),
