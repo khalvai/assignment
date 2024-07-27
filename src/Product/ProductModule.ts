@@ -13,7 +13,7 @@ import JWTokenService from "src/Common/Infrastructure/Output/JWTokenService";
 import { GetAllImp } from "src/Product/Application/Ports/Input/GetAllImpl";
 import { DeleteAllImpl } from "src/Product/Application/Ports/Input/DeleteAllImpl";
 import { Publisher } from "src/Common/Application/Output/Publisher";
-import { RabbitMQPublisher } from "src/Common/Infrastructure/Output/RabbitMQPublisher";
+import { RabbitMQPublisher } from "src/Product/Infrastructure/RabbitMQPublisher";
 import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 
 
