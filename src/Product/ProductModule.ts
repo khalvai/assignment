@@ -8,6 +8,8 @@ import { ProductRepository } from "src/Product/Application/Ports/Output/ProductR
 import { PostgresqlProductRepository } from "src/Product/Infrastructure/PostgresqlProductRepository";
 import { CreateManyImpl } from "src/Product/Application/Ports/Input/CreateManyImpl";
 import { ProductController } from "src/Product/Infrastructure/HTTP/controller";
+import { TokenService } from "src/Common/Application/Output/TokenService";
+import JWTokenService from "src/Common/Infrastructure/Output/JWTokenService";
 
 
 
@@ -22,6 +24,10 @@ import { ProductController } from "src/Product/Infrastructure/HTTP/controller";
         {
             provide: ProductRepository,
             useClass: PostgresqlProductRepository
+        },
+        {
+            provide: TokenService,
+            useClass: JWTokenService,
         },
 
         ProductMapper,
