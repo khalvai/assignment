@@ -17,7 +17,7 @@ export class GetAllImp implements GetAll {
     async execute(query: GetAllQuery): Promise<ProductReadModel[]> {
 
         const userId = UserId.createFromValid(query.userId)
-        const productsReadModel = await this.productRepository.getAll(userId)
+        const productsReadModel = await this.productRepository.getAllReadModels(userId)
 
         return productsReadModel
 
