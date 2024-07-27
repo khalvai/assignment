@@ -27,13 +27,8 @@ export default class JWTokenService implements TokenService {
 
 
 
-            console.log(typeof data);
-
-
             if ("exp" in data) {
                 const exp = data?.exp as number * 1000
-                console.log(" exp", exp);
-                console.log(" now", Date.now());
 
 
                 if (exp < Date.now()) {
