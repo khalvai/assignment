@@ -15,6 +15,7 @@ import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { OnEvent } from "@nestjs/event-emitter";
 import { Payload } from "@nestjs/microservices";
 import { ApiTags } from "@nestjs/swagger";
+import { UserResponseMessages } from "ResponseMessages/user.response.messages";
 import Result from "src/Common/Application/Result";
 import { HttpExceptionFilter } from "src/Common/Infrastructure/Output/HttpExceptionFilter";
 import { ConfirmVerificationEmailCommand } from "src/User/Application/Commands/ConfirmVerificationEmailCommand";
@@ -26,7 +27,7 @@ import { RegisterDTO } from "src/User/Infrastructure/Input/HTTP/Dto/ReginsterDTO
 
 @UseFilters(HttpExceptionFilter)
 @ApiTags("Authentication")
-@Controller("Auth")
+@Controller("auth")
 export default class UserController {
   public constructor(private commandBus: CommandBus, private readonly queryBus: QueryBus) { }
 
@@ -36,8 +37,8 @@ export default class UserController {
   public async registerNewUser(
     @Body() registerCommand: RegisterDTO,
     @Ip() ip: string,
-  ): Promise<void> {
-    const result = await this.commandBus.execute<RegisterCommand, void>(
+  ) {
+    await this.commandBus.execute<RegisterCommand, void>(
       new RegisterCommand(
         registerCommand.email,
         registerCommand.password,
@@ -46,8 +47,10 @@ export default class UserController {
         ip,
       ),
     );
+    return {
+      message: UserResponseMessages.VERIFICATION_EMAIL_SENT
+    }
 
-   
   }
 
   @Get("/:token")
@@ -61,6 +64,10 @@ export default class UserController {
 
     if ("failure" in result) {
       throw result.failure
+    }
+
+    return {
+      message: UserResponseMessages.EMAIL_VERIFIED
     }
   }
   @Post("/login")
