@@ -1,14 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { setupDocument } from 'src/Common/Infrastructure/Input/Swagger';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './AppModule'
+import { setupDocument } from 'src/Common/Infrastructure/Input/Swagger'
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AppModule)
 
+	await setupDocument(app, 'api-docs')
 
-  await setupDocument(app, "api-docs")
-
-  await app.listen(3000);
+	await app.listen(3000)
 }
-bootstrap();
+bootstrap()
